@@ -107,6 +107,23 @@ extern "C" fn vertical_draw_text(
 }
 
 #[no_mangle]
+extern "C" fn draw_text_wrapped(
+    _canvas: *mut CLedCanvas,
+    _font: *const CLedFont,
+    _x: c_int,
+    _y: c_int,
+    _line_width: c_int,
+    _r: u8,
+    _g: u8,
+    _b: u8,
+    _utf8_text: *const c_char,
+    _kerning_offset: c_int,
+    _leading: c_int,
+) -> c_int {
+    0
+}
+
+#[no_mangle]
 extern "C" fn draw_circle(
     _canvas: *mut CLedCanvas,
     _x: c_int,

@@ -149,6 +149,41 @@ impl LedCanvas {
             }
         }
     }
+
+    /// Renders text with optimal line wrapping using the C++ library.
+    /// The algorithm minimizes raggedness and gaps at the ends of lines.
+    ///
+    /// # Panics
+    /// If the given `text` fails to convert to a `CString`. This can
+    /// occur when there is a null character mid way in the string.
+    pub fn draw_text_wrapped(
+        &mut self,
+        font: &LedFont,
+        text: &str,
+        line_width: i32,
+        x: i32,
+        y: i32,
+        color: &LedColor,
+        kerning_offset: i32,
+        leading: i32
+    ) -> i32 {
+        let text = CString::new(text).expect("given string failed to convert into a CString");
+        unsafe {
+            ffi::draw_text_wrapped(
+                self.handle,
+                font.handle,
+                line_width as c_int,
+                x as c_int,
+                y as c_int,
+                color.red,
+                color.green,
+                color.blue,
+                text.as_ptr(),
+                kerning_offset as c_int,
+                leading as c_int,
+            ) as i32
+        }
+    }
 }
 
 #[cfg(test)]

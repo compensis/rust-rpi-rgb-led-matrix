@@ -113,6 +113,19 @@ extern "C" {
         utf8_text: *const c_char,
         kerning_offset: c_int,
     ) -> c_int;
+    pub fn draw_text_wrapped(
+        canvas: *mut CLedCanvas,
+        font: *const CLedFont,
+        x: c_int,
+        y: c_int,
+        line_width: c_int,
+        r: u8,
+        g: u8,
+        b: u8,
+        utf8_text: *const c_char,
+        kerning_offset: c_int,
+        leading: c_int,
+    ) -> c_int;
     pub fn draw_circle(
         canvas: *mut CLedCanvas,
         x: c_int,
