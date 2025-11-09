@@ -1,16 +1,16 @@
 [package]
 name = "rpi-led-matrix-sys"
-version = "0.2.1"
+version = "0.1.0"
 edition = "2021"
 description = "system library for the rpi-rgb-led-matrix C++ library"
 authors = [
     "Tyler Holmes <tyler@holmesengineering.com>",
+    "Philipp Compensis <github@0xg.de>",
 ]
 links = "rgbmatrixsys"
 build = "build.rs"
 license = "GPL-3.0"
-repository = "https://github.com/rust-rpi-led-matrix/rust-rpi-rgb-led-matrix"
-homepage = "https://docs.rs/rpi-led-matrix-sys/"
+repository = "https://github.com/compensis/rust-rpi-rgb-led-matrix"
 readme = "README.md"
 keywords = ["rpi", "raspberry-pi", "led-matrix"]
 categories = ["embedded", "external-ffi-bindings"]
