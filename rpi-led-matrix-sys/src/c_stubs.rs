@@ -64,6 +64,16 @@ extern "C" fn load_font(_bdf_font_file: *const c_char) -> *mut CLedFont {
 }
 
 #[no_mangle]
+extern "C" fn baseline_font(_font: *const CLedFont) -> c_int {
+    0
+}
+
+#[no_mangle]
+extern "C" fn height_font(_font: *const CLedFont) -> c_int {
+    -1
+}
+
+#[no_mangle]
 extern "C" fn delete_font(_font: *mut CLedFont) {}
 
 #[no_mangle]

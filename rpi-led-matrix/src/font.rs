@@ -34,6 +34,25 @@ impl LedFont {
             Ok(Self { handle })
         }
     }
+
+    /// Read the height of a font
+    ///
+    /// # Errors
+    /// - If the font has not been loaded.
+    pub fn height(&self) -> Result<i32, &'static str> {
+        let height = unsafe { ffi::height_font(self.handle) };
+
+        if height == -1 {
+            Err("Font is not loaded")
+        } else {
+            Ok(height)
+        }
+    }
+
+    /// Return baseline. Pixels from the topline to the baseline.
+    pub fn baseline(&self) -> i32 {
+        return unsafe { ffi::baseline_font(self.handle) };
+    }
 }
 
 impl Drop for LedFont {
