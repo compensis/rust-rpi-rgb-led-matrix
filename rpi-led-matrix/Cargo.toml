@@ -44,5 +44,9 @@ required-features = ["args"]
 name = "embedded-graphics-basic"
 required-features = ["args", "embeddedgraphics"]
 
+[[example]]
+name = "text"
+required-features = ["args"]
+
 [package.metadata.docs.rs]
 all-features = true
