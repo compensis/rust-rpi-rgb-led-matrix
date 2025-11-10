@@ -64,7 +64,7 @@ impl Drop for LedFont {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{LedColor, LedMatrix};
+    use crate::{LedColor, LedMatrix, TextDrawOptions};
     use std::{thread, time};
 
     #[test]
@@ -81,32 +81,20 @@ mod test {
         let (width, height) = canvas.canvas_size();
         let text_width = 10 * 9;
         let baseline = height / 2;
+        let mut options = TextDrawOptions::new().color(&color);
 
         canvas = matrix.offscreen_canvas();
         for x in 0..(2 * width) {
             let x = x % (10 * 9);
             canvas.clear();
-            canvas.draw_text(&font, "Mah boy! ", x, baseline, &color, 0, false);
-            canvas.draw_text(
-                &font,
-                "Mah boy! ",
-                x - text_width,
-                baseline,
-                &color,
-                0,
-                false,
-            );
-            canvas.draw_text(
-                &font,
-                "Mah boy! ",
-                x + text_width,
-                baseline,
-                &color,
-                0,
-                false,
-            );
+            options = options.position(x, baseline);
+            canvas.draw_text(&font, "Mah boy! ", &options);
+            options = options.position(x - text_width, baseline);
+            canvas.draw_text(&font, "Mah boy! ", &options);
+            options = options.position(x + text_width, baseline);
+            canvas.draw_text(&font, "Mah boy! ", &options);
             canvas = matrix.swap(canvas);
-            thread::sleep(time::Duration::new(0, 50000000));
+            thread::sleep(time::Duration::new(0, 100000000));
         }
     }
 }

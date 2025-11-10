@@ -16,6 +16,30 @@ pub struct LedCanvas {
     pub(crate) handle: *mut ffi::CLedCanvas,
 }
 
+/// Layout options for rendering text on the canvas
+pub enum TextLayout {
+    /// Draw text horizontally
+    Horizontal,
+    /// Draw text vertically
+    Vertical,
+    /// Draw text with optimal line wrapping using an algorithm that
+    /// minimizes raggedness and gaps at the ends of lines.
+    Wrapped{
+        /// Maximum line width
+        line_width: i32
+    }, 
+}
+
+/// Options for rendering text on the canvas
+pub struct TextDrawOptions<'a> {
+    x: i32,
+    y: i32,
+    color: &'a LedColor,
+    layout: TextLayout,
+    kerning_offset: i32,
+    leading: i32,
+}
+
 /// Implements both the [`Send`] and [`Sync`] traits for [`LedCanvas`].
 ///
 /// The underlying handle referenced by this FFI is [heap-allocated],
@@ -110,79 +134,98 @@ impl LedCanvas {
     /// # Panics
     /// If the given `text` fails to convert to a `CString`. This can
     /// occur when there is a null character mid way in the string.
-    pub fn draw_text(
-        &mut self,
-        font: &LedFont,
-        text: &str,
-        x: i32,
-        y: i32,
-        color: &LedColor,
-        kerning_offset: i32,
-        vertical: bool,
-    ) -> i32 {
+    pub fn draw_text(&mut self, font: &LedFont, text: &str, options: &TextDrawOptions) -> i32 {
         let text = CString::new(text).expect("given string failed to convert into a CString");
-        unsafe {
-            if vertical {
-                ffi::vertical_draw_text(
-                    self.handle,
-                    font.handle,
-                    x as c_int,
-                    y as c_int,
-                    color.red,
-                    color.green,
-                    color.blue,
-                    text.as_ptr(),
-                    kerning_offset as c_int,
-                ) as i32
-            } else {
-                ffi::draw_text(
-                    self.handle,
-                    font.handle,
-                    x as c_int,
-                    y as c_int,
-                    color.red,
-                    color.green,
-                    color.blue,
-                    text.as_ptr(),
-                    kerning_offset as c_int,
-                ) as i32
+        let x = options.x as c_int;
+        let y = options.y as c_int;
+        let r = options.color.red;
+        let g = options.color.green;
+        let b = options.color.blue;
+        let text = text.as_ptr();
+        let kerning_offset = options.kerning_offset as c_int;
+        let leading = options.leading as c_int;
+
+        match options.layout {
+            TextLayout::Horizontal => {
+                println!("draw_text");
+                unsafe {
+                    ffi::draw_text(
+                        self.handle, font.handle, x, y, r, g, b, text, kerning_offset
+                    ) as i32
+                }
+            }
+            TextLayout::Vertical => {
+                println!("vertical_draw_text");
+                unsafe {
+                    ffi::vertical_draw_text(
+                        self.handle, font.handle, x, y, r, g, b, text, kerning_offset
+                    ) as i32
+                }
+            }
+            TextLayout::Wrapped { line_width } => {
+                println!("draw_text_wrapped");
+                unsafe {
+                    ffi::draw_text_wrapped(
+                        self.handle, font.handle, x, y, line_width ,r, g, b, text, kerning_offset, leading
+                    ) as i32
+                }
             }
         }
     }
+}
 
-    /// Renders text with optimal line wrapping using the C++ library.
-    /// The algorithm minimizes raggedness and gaps at the ends of lines.
-    ///
-    /// # Panics
-    /// If the given `text` fails to convert to a `CString`. This can
-    /// occur when there is a null character mid way in the string.
-    pub fn draw_text_wrapped(
-        &mut self,
-        font: &LedFont,
-        text: &str,
-        line_width: i32,
-        x: i32,
-        y: i32,
-        color: &LedColor,
-        kerning_offset: i32,
-        leading: i32
-    ) -> i32 {
-        let text = CString::new(text).expect("given string failed to convert into a CString");
-        unsafe {
-            ffi::draw_text_wrapped(
-                self.handle,
-                font.handle,
-                line_width as c_int,
-                x as c_int,
-                y as c_int,
-                color.red,
-                color.green,
-                color.blue,
-                text.as_ptr(),
-                kerning_offset as c_int,
-                leading as c_int,
-            ) as i32
+impl<'a> TextDrawOptions<'a> {
+    /// Creates the options for rendering text on the canvas with the default values
+    pub fn new() -> Self {
+        Self {
+            x: 0,
+            y: 0,
+            color: &LedColor {
+                red: 255,
+                green: 255,
+                blue: 255,
+            },
+            layout: TextLayout::Horizontal,
+            kerning_offset: 0,
+            leading: 0,
         }
+    }
+
+    /// Sets the position ("x", "y") where the text is drawn
+    pub fn position(mut self, x: i32, y: i32) -> Self {
+        self.x = x;
+        self.y = y;
+        self
+    }
+
+    /// Sets the color used to draw the text
+    pub fn color(mut self, color: &'a LedColor) -> Self {
+        self.color = color;
+        self
+    }
+
+    /// Sets the way the text is drawn
+    pub fn layout(mut self, layout: TextLayout) -> Self {
+        self.layout = layout;
+        self
+    }
+
+    /// Sets the value for additional horizontal spacing between characters
+    pub fn kerning_offset(mut self, offset: i32) -> Self {
+        self.kerning_offset = offset;
+        self
+    }
+
+    /// Sets the value for additional vertical spacing between lines
+    pub fn leading(mut self, leading: i32) -> Self {
+        self.leading = leading;
+        self
+    }
+}
+
+impl Default for TextDrawOptions<'_> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

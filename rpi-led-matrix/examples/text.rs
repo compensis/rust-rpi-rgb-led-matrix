@@ -1,6 +1,6 @@
 /// Example showing some basic usage of the C++ library.
 use clap::{crate_version, App};
-use rpi_led_matrix::{args, LedFont, LedColor, LedMatrix};
+use rpi_led_matrix::{args, LedFont, LedColor, LedMatrix, TextDrawOptions};
 
 const DELAY: std::time::Duration = std::time::Duration::from_secs(5);
 
@@ -24,9 +24,13 @@ fn main() {
     let font_file = std::path::Path::new("./rpi-led-matrix-sys/cpp-library/fonts/5x8.bdf");
     let font = LedFont::new(font_file).unwrap();
     let baseline = font.height().unwrap();
+
+    let options = TextDrawOptions::new()
+        .position(0, baseline)
+        .color(&color);
     
     canvas.clear();
-    canvas.draw_text(&font, "Halle World", 0, baseline, &color, 0, false);
+    canvas.draw_text(&font, "Halle World", &options);
     let _ = matrix.swap(canvas);
 
     std::thread::sleep(DELAY);

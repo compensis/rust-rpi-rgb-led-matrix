@@ -57,7 +57,7 @@ pub(crate) use rpi_led_matrix_sys as ffi;
 
 // re-export objects to the root
 #[doc(inline)]
-pub use canvas::LedCanvas;
+pub use canvas::{LedCanvas, TextDrawOptions, TextLayout};
 #[doc(inline)]
 pub use font::LedFont;
 #[doc(inline)]
