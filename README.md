@@ -16,3 +16,8 @@ as well as higher-level, safe Rust bindings in [`rpi-led-matrix`](./rpi-led-matr
 [`rpi-led-matrix-sys` README](./rpi-led-matrix-sys/README.md)
 
 There is also a pure Rust rewrite in the crate [`rpi-led-panel`](https://crates.io/crates/rpi_led_panel)!
+
+## Run tests
+```
+sudo -E $(which cargo) test -- --test-threads=1
+```
