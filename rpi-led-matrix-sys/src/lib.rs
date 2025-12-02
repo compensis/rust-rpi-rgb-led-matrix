@@ -88,6 +88,7 @@ extern "C" {
         canvas: *mut CLedCanvas,
     ) -> *mut CLedCanvas;
     pub fn load_font(bdf_font_file: *const c_char) -> *mut CLedFont;
+    pub fn load_font_from_buffer(buffer: *const c_char, buffer_size: usize) -> *mut CLedFont;
     pub fn baseline_font(font: *const CLedFont) -> c_int;
     pub fn height_font(font: *const CLedFont) -> c_int;
     pub fn delete_font(font: *mut CLedFont);

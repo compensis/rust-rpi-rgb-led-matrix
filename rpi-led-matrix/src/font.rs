@@ -35,6 +35,22 @@ impl LedFont {
         }
     }
 
+    /// Creates a new [`LedFont`] instance from a buffer containing a bdf font.
+    ///
+    /// # Errors
+    /// - If the C++ library returns us a null pointer when loading the font.
+    pub fn new_from_buffer(bdf_buffer: &[u8]) -> Result<Self, &'static str> {
+        let handle = unsafe {
+            ffi::load_font_from_buffer(bdf_buffer.as_ptr(), bdf_buffer.len())
+        };
+
+        if handle.is_null() {
+            Err("Couldn't load font")
+        } else {
+            Ok(Self { handle })
+        }
+    }
+
     /// Read the height of a font
     ///
     /// # Errors
