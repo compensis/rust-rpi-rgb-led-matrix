@@ -147,7 +147,6 @@ impl LedCanvas {
 
         match options.layout {
             TextLayout::Horizontal => {
-                println!("draw_text");
                 unsafe {
                     ffi::draw_text(
                         self.handle, font.handle, x, y, r, g, b, text, kerning_offset
@@ -155,7 +154,6 @@ impl LedCanvas {
                 }
             }
             TextLayout::Vertical => {
-                println!("vertical_draw_text");
                 unsafe {
                     ffi::vertical_draw_text(
                         self.handle, font.handle, x, y, r, g, b, text, kerning_offset
@@ -163,7 +161,6 @@ impl LedCanvas {
                 }
             }
             TextLayout::Wrapped { line_width } => {
-                println!("draw_text_wrapped");
                 unsafe {
                     ffi::draw_text_wrapped(
                         self.handle, font.handle, x, y, line_width ,r, g, b, text, kerning_offset, leading
